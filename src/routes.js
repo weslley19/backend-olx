@@ -4,6 +4,7 @@ const router = express.Router();
 // Middlewares
 const Auth = require('./middlewares/Auth');
 const AuthValidator = require('./validators/AuthValidator');
+const UserValidator = require('./validators/UserValidator');
 
 const AdsController = require('./controllers/AdsController');
 const AuthController = require('./controllers/AuthController');
@@ -22,7 +23,7 @@ router.post('/user/signup', AuthValidator.signup, AuthController.signup);
 
 // Informações sobre o usuário
 router.get('/user/me', Auth.private, UserController.info);
-router.put('/user/me', Auth.private, UserController.editAction);
+router.put('/user/me', UserValidator.editAction, Auth.private, UserController.editAction);
 
 // Listar categorias
 router.get('/categories', AdsController.getCategories);

@@ -16,6 +16,11 @@ module.exports = {
             token = req.body.token;
         }
 
+        if (token == '') {
+            res.json({ notallowed: true });
+            return;
+        }
+
         const user = await User.findOne({ token });
         if (!user) {
             res.json({ notallowed: true });
