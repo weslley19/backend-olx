@@ -7,7 +7,32 @@ const State = require('../models/State');
 
 module.exports = {
     signin: async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.json({ erros: errors.mapped() });
+            return;
+        }
 
+        const data = matchedData(req);
+
+        // Validando e-mail
+        const user = await User.findOne({ email: data.email });
+        if (!user) {
+            res.json({ error: 'E-mail e/ou senha errados!' });
+            return;
+        } 
+
+        const match = await bcrypt.compare(data.password, user.passwordHash);
+        if (!match) {
+            res.json({ error: 'E-mail e/ou senha errados!' });
+            return;
+        }
+
+        // Criando um novo token
+        const payload = (Date.now() + Math.random()).toString();
+        const token = await bcrypt.hash(payload, 10);
+
+        res.json({ token, email: data.email });
     },
     signup: async (req, res) => {
         const errors = validationResult(req);
@@ -54,7 +79,7 @@ module.exports = {
             passwordHash, 
             token,
             state: data.state,
-
+            createdAt: Date.now()
         });
 
         await newUser.save();

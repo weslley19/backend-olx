@@ -17,7 +17,7 @@ router.get('/ping', (req, res) => {
 router.get('/states', UserController.getStates);
 
 // Login de cadastro de usuários
-router.post('/user/signin', AuthController.signin);
+router.post('/user/signin', AuthValidator.signin, AuthController.signin);
 router.post('/user/signup', AuthValidator.signup, AuthController.signup);
 
 // Informações sobre o usuário
