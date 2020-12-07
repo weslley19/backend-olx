@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
+// Middlewares
+const Auth = require('./middlewares/Auth');
+const AuthValidator = require('./validators/AuthValidator');
+
 const AdsController = require('./controllers/AdsController');
 const AuthController = require('./controllers/AuthController');
 const UserController = require('./controllers/UserController');
-
-const Auth = require('./middlewares/Auth');
 
 router.get('/ping', (req, res) => {
     res.json({ pong: true });
@@ -16,7 +18,7 @@ router.get('/states', UserController.getStates);
 
 // Login de cadastro de usuários
 router.post('/user/signin', AuthController.signin);
-router.post('/user/signup', AuthController.signup);
+router.post('/user/signup', AuthValidator.signup, AuthController.signup);
 
 // Informações sobre o usuário
 router.get('/user/me', Auth.private, UserController.info);
