@@ -1,17 +1,17 @@
 module.exports = {
-    getCategories: (req, res) => {
+    getCategories: async (req, res) => {
 
     },
-    addAction: (req, res) => {
+    addAction: async (req, res) => {
 
     },
-    getList: (req, res) => {
+    getList: async (req, res) => {
 
     },
-    getItem: (req, res) => {
+    getItem: async (req, res) => {
 
     },
-    editAction: (req, res) => {
+    editAction: async (req, res) => {
 
     }
 }
