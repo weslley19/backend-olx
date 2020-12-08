@@ -1,4 +1,6 @@
 const { validationResult, matchedData } = require('express-validator');
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 
 const State = require('../models/State');
 const User = require('../models/User');
@@ -55,8 +57,29 @@ module.exports = {
             updates.email = data.email;
         }
 
-        await User.findByIdAndUpdate({ token: data.token }, {$set: updates} );
+        if (data.state) {
+            if (mongoose.Types.ObjectId.isValid(data.state)) {
+                const checkState = await State.findById(data.state);
+                if (!checkState) {
+                    res.json({ error: 'Estado não encontrado!' });
+                    return;
+                }
 
-        res.json({  });
+                updates.state = data.state;
+            } else {
+                res.json({ error: 'Código de estado inválido!' });
+                return;
+            }
+        }
+
+        if (data.password) { 
+            updates.passwordHash = await bcrypt.hash(data.password, 10);
+        }
+
+        updates.updatedAt = Date.now();
+
+        await User.findOneAndUpdate({ token: data.token }, {$set: updates} );
+
+        res.json({ msg: 'Atualizado com sucesso!' });
     }
 }
